@@ -1,5 +1,3 @@
-# rubocop: disable Metrics/CyclomaticComplexity
-
 require_relative './input_checker'
 require 'nokogiri'
 require 'httparty'
@@ -89,5 +87,3 @@ class Scrapper
     movieinfo
   end
 end
-
-# rubocop: enable Metrics/CyclomaticComplexity
