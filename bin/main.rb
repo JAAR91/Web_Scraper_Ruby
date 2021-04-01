@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-# rubocop: disable Metrics/MethodLength, Metrics/AbcSize
+# rubocop: disable Metrics/MethodLength
 
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
@@ -162,9 +160,7 @@ def print_movies(link, name)
     i = ans[1]
     s = []
     (i + 20 + 1).times { |item| s.push(item.to_s) }
-    if s.any?(ans[0])
-      movie_info(array[(ans[0].to_i - 1)].attributes['href'].value)
-    end
+    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if s.any?(ans[0])
   end
   main_menu
 end
@@ -237,6 +233,6 @@ def main_screen
   main_menu
 end
 
-# rubocop: enable Metrics/MethodLength, Metrics/AbcSize
+# rubocop: enable Metrics/MethodLength
 
 main_screen

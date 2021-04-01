@@ -1,16 +1,11 @@
-# frozen_string_literal: true
-
-# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
 require_relative './input_checker'
 require 'nokogiri'
 require 'httparty'
-require 'byebug'
 
 # class Scrapper
 class Scrapper
-  # class Scrapper
-
   def initialize
     unparsed = HTTParty.get('https://en.wikipedia.org/wiki/Lists_of_films#Alphabetical_indices')
     @parsed = Nokogiri::HTML(unparsed)
@@ -92,4 +87,4 @@ class Scrapper
   end
 end
 
-# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength
