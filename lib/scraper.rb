@@ -1,4 +1,4 @@
-# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/AbcSize
 
 require_relative './input_checker'
 require 'nokogiri'
@@ -35,20 +35,7 @@ class Scrapper
     porcentage = 0
     index.each_with_index do |item, indexa|
       porcentage = ((indexa.to_f + 1) / index.count.to_f) * 100
-      input.display_clear
-      puts '+----------------------------------------------+'
-      print '|    Loading Movies'
-      print "  #{porcentage.to_i}" if porcentage < 10
-      print " #{porcentage.to_i}" if porcentage > 9 && porcentage < 100
-      print porcentage.to_i.to_s if porcentage > 99
-      puts '%                        |'
-      print '|   '
-      (index.count * 2).times do |j|
-        print '▓' if j < ((indexa + 1) * 2)
-        print '░' if j >= ((indexa + 1) * 2)
-      end
-      puts '   |'
-      puts '+----------------------------------------------+'
+      screen_load(porcentage, index.count, indexa)
       value = item.attributes['href'].value
       unparsed = HTTParty.get("https://en.wikipedia.org#{value}")
       allmovies = Nokogiri::HTML(unparsed)
@@ -58,6 +45,23 @@ class Scrapper
       end
     end
     allmoviesarray
+  end
+
+  def screen_load(porcentage, index, indexa)
+    input.display_clear
+    puts '+----------------------------------------------+'
+    print '|    Loading Movies'
+    print "  #{porcentage.to_i}" if porcentage < 10
+    print " #{porcentage.to_i}" if porcentage > 9 && porcentage < 100
+    print porcentage.to_i.to_s if porcentage > 99
+    puts '%                        |'
+    print '|   '
+    (index * 2).times do |j|
+      print '▓' if j < ((indexa + 1) * 2)
+      print '░' if j >= ((indexa + 1) * 2)
+    end
+    puts '   |'
+    puts '+----------------------------------------------+'
   end
 
   def menu_movies(input)
@@ -86,4 +90,4 @@ class Scrapper
   end
 end
 
-# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/AbcSize
