@@ -1,4 +1,4 @@
-# rubocop: disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+# rubocop: disable Metrics/MethodLength
 
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
@@ -233,6 +233,6 @@ def main_screen
   main_menu
 end
 
-# rubocop: enable Metrics/MethodLength, Metrics/CyclomaticComplexity
+# rubocop: enable Metrics/MethodLength
 
 main_screen

@@ -1,4 +1,4 @@
-# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/AbcSize
+# rubocop: disable Metrics/CyclomaticComplexity
 
 require_relative './input_checker'
 require 'nokogiri'
@@ -27,7 +27,6 @@ class Scrapper
 
   def all_movies
     allmoviesarray = []
-    input = Imputchecker.new
     index = @parsed.css('table.wikitable').css('tr').css('td').css('a')
     index.pop
     index.pop
@@ -48,6 +47,7 @@ class Scrapper
   end
 
   def screen_load(porcentage, index, indexa)
+    input = Imputchecker.new
     input.display_clear
     puts '+----------------------------------------------+'
     print '|    Loading Movies'
@@ -90,4 +90,4 @@ class Scrapper
   end
 end
 
-# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/AbcSize
+# rubocop: enable Metrics/CyclomaticComplexity
