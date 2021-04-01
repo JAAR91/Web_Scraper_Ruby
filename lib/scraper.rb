@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+
 require_relative './input_checker'
 require 'nokogiri'
 require 'httparty'
 require 'byebug'
 
+# class Scrapper
 class Scrapper
+  # class Scrapper
+
   def initialize
     unparsed = HTTParty.get('https://en.wikipedia.org/wiki/Lists_of_films#Alphabetical_indices')
     @parsed = Nokogiri::HTML(unparsed)
@@ -28,15 +33,29 @@ class Scrapper
   def all_movies
     allmoviesarray = []
     input = Imputchecker.new
-
     index = @parsed.css('table.wikitable').css('tr').css('td').css('a')
     index.pop
     index.pop
     index.pop
-    index.each_with_index do |item, index|
+    porcentage = 0
+    index.each_with_index do |item, indexa|
+      porcentage = ((indexa.to_f + 1) / index.count.to_f) * 100
       input.display_clear
-      puts index
-      unparsed = HTTParty.get("https://en.wikipedia.org#{item.attributes['href'].value}")
+      puts '+----------------------------------------------+'
+      print '|    Loading Movies'
+      print "  #{porcentage.to_i}" if porcentage < 10
+      print " #{porcentage.to_i}" if porcentage > 9 && porcentage < 100
+      print porcentage.to_i.to_s if porcentage > 99
+      puts '%                        |'
+      print '|   '
+      (index.count * 2).times do |j|
+        print '▓' if j < ((indexa + 1) * 2)
+        print '░' if j >= ((indexa + 1) * 2)
+      end
+      puts '   |'
+      puts '+----------------------------------------------+'
+      value = item.attributes['href'].value
+      unparsed = HTTParty.get("https://en.wikipedia.org#{value}")
       allmovies = Nokogiri::HTML(unparsed)
 
       allmovies.css('div.div-col').css('a').each do |itemb|
@@ -59,12 +78,10 @@ class Scrapper
     array = []
     movieinfo = [[], [], [], []]
     movieinfo[0].push(parsed.css('h1.firstHeading').text)
-
+    array = parsed.css('table.haudio').css('tr').css('th')
     parsed.css('table.infobox').css('tr').each do |item|
-      unless parsed.css('table.haudio').css('tr').css('th').text.include?(item.css('th').text)
+      unless array.text.include?(item.css('th').text)
         movieinfo[1].push(item.css('th').text)
-      end
-      unless parsed.css('table.haudio').css('tr').css('th').text.include?(item.css('th').text)
         movieinfo[2].push(item.css('td').text.split("\n"))
       end
     end
@@ -74,3 +91,5 @@ class Scrapper
     movieinfo
   end
 end
+
+# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
+
 require 'byebug'
 
+# class inputchecker
 class Imputchecker
   require 'rbconfig'
   include RbConfig
@@ -35,7 +38,7 @@ class Imputchecker
     input
   end
 
-  def menu_list_checker(input, initial, last, j, page)
+  def menu_list_checker(input, initial, last, j_var, page)
     array = %w[B N b n m M]
     result = []
     i_pass = 0
@@ -49,24 +52,24 @@ class Imputchecker
       elsif array.none?(input)
         puts "Please enter a value from #{initial} to #{last} or N,B or M"
         input = gets.chomp
-      elsif %w[b B].any?(input) && j.zero?
+      elsif %w[b B].any?(input) && j_var.zero?
         puts 'You are already on the first page'
         input = gets.chomp
-      elsif %w[n N].any?(input) && ((j + 20) / 20) == page
+      elsif %w[n N].any?(input) && ((j_var + 20) / 20) == page
         puts 'You are already on the last page'
         input = gets.chomp
-      elsif %w[b B].any?(input) && j > 1
-        j -= 20
+      elsif %w[b B].any?(input) && j_var > 1
+        j_var -= 20
         i_pass = 1
-      elsif %w[n N].any?(input) && ((j + 20) / 20) < page
-        j += 20
+      elsif %w[n N].any?(input) && ((j_var + 20) / 20) < page
+        j_var += 20
         i_pass = 1
       else
         i_pass = 1
       end
     end
     result.push(input)
-    result.push(j)
+    result.push(j_var)
     result
   end
 
@@ -78,9 +81,11 @@ class Imputchecker
     end
 
     until !input.nil? && input.is_a?(Integer) && array.any?(input)
-      print "Please enter only numbers beetwen #{initial} and #{last} please!! :"
+      print "Please enter only numbers beetwen #{initial} and #{last} please!!:"
       input = gets.chomp.to_i
     end
     input
   end
 end
+
+# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize

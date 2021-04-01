@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop: disable Metrics/MethodLength, Metrics/AbcSize
+
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
 
@@ -35,20 +37,23 @@ def main_menu
 end
 
 def credits
+  @input_checker.display_clear
   puts '+---------------------------------+'
   puts '|            CREDITS              |'
   puts '+---------------------------------+'
-  puts "|   All credits to:               |"
+  puts '|   All credits to:               |'
   puts '|                        JAAR     |'
   puts '|                                 |'
   puts '|   Microverser 2021              |'
   puts '+---------------------------------+'
   print 'Press enter to go back...'
   gets
+  main_menu
 end
 
 def instructions_menu
-  boxing('  About Movie Web Scraper  ')
+  @input_checker.display_clear
+  boxing('   About Movie Web Scraper  ')
   puts '+----------------------------+'
   puts '|This program was made as a  |'
   puts '|project to scrape a page    |'
@@ -56,7 +61,7 @@ def instructions_menu
   puts '|                            |'
   puts '|The main program contains   |'
   puts '|two options to search       |'
-  puts '|                            |' 
+  puts '|                            |'
   puts '|The first one is a index    |'
   puts '|in alphabetical order to    |'
   puts '|search movies by index      |'
@@ -111,7 +116,7 @@ def search_name(array, input)
     @input_checker.display_clear
     boxing("#{my_array[0].count} results found with #{input}")
     my_array[0].each_with_index { |item, index| puts "#{index + 1}. #{item}" }
-    boxing('Enter a number to go to the movie profile or press enter to search again')
+    boxing('Enter a number to see the movie profile or press enter to go back')
     input = @input_checker.search_result_check(gets.chomp, my_array[0].count)
     movie_info(my_array[1][input.to_i - 1]) if !input.nil? && input != ''
   end
@@ -231,5 +236,7 @@ def main_screen
   gets
   main_menu
 end
+
+# rubocop: enable Metrics/MethodLength, Metrics/AbcSize
 
 main_screen
