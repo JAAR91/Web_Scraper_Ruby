@@ -35,7 +35,16 @@ def main_menu
 end
 
 def credits
-  
+  puts '+---------------------------------+'
+  puts '|            CREDITS              |'
+  puts '+---------------------------------+'
+  puts "|   All credits to:               |"
+  puts '|                        JAAR     |'
+  puts '|                                 |'
+  puts '|   Microverser 2021              |'
+  puts '+---------------------------------+'
+  print 'Press enter to go back...'
+  gets
 end
 
 def instructions_menu
