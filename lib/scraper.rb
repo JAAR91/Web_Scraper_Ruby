@@ -1,4 +1,4 @@
-# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+# rubocop: disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
 require_relative './input_checker'
 require 'nokogiri'
@@ -63,8 +63,7 @@ class Scrapper
   def menu_movies(input)
     unparsed = HTTParty.get("https://en.wikipedia.org#{input}")
     parsed = Nokogiri::HTML(unparsed)
-    array = parsed.css('div.div-col').css('a')
-    array
+    parsed.css('div.div-col').css('a')
   end
 
   def movie_profile(input)
@@ -87,4 +86,4 @@ class Scrapper
   end
 end
 
-# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength
+# rubocop: enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity

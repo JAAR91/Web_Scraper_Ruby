@@ -42,10 +42,7 @@ class Imputchecker
       array.push((i + initial).to_s)
     end
     until i_pass.positive?
-      if input.nil?
-        puts "Please enter a value from #{initial} to #{last} or N,B or M"
-        input = gets.chomp
-      elsif array.none?(input)
+      if input.nil? || array.none?(input)
         puts "Please enter a value from #{initial} to #{last} or N,B or M"
         input = gets.chomp
       elsif %w[b B].any?(input) && j_var.zero?
