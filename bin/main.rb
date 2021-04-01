@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
 
@@ -6,19 +8,23 @@ require_relative '../lib/input_checker'
 
 def main_menu
   @input_checker.display_clear
-  puts 'Main Menu'
-  puts '+---------------------+'
+  puts '+-----------------------------+'
+  puts '|          Main Menu          |'
+  puts '+-----------------------------+'
   puts '1. Show index'
   puts '2. Search options'
-  puts '3. All movies'
+  puts '3. Instructions'
   puts '4. Credits'
   puts '5. Exit'
-  puts '+---------------------+'
-  input = @input_checker.number_checker(gets.chomp.to_i, 1,5)
+  puts '+------------------------------+'
+  puts '| select a number from 1 to 5  |'
+  puts '+------------------------------+'
+  input = @input_checker.number_checker(gets.chomp.to_i, 1, 5)
   case input
   when 1
     movie_index_by
   when 2
+    search_options
   when 3
   when 4
   when 5
@@ -26,53 +32,155 @@ def main_menu
   end
 end
 
+def search_options
+  array = @movies.all_movies
+  
+  ans = nil
+  until %w[m M].any?(ans)
+    @input_checker.display_clear
+    puts '+------------------------------------------------+'
+    puts '|            Search by Name                      |'
+    puts '+------------------------------------------------+'
+    puts '|Enter the name of the movie you are looking for |'
+    puts '|or enter m to go back to the menu               |'
+    puts '+------------------------------------------------+'
+    ans = @input_checker.empty_checker(gets.chomp)
+    search_name(array, ans) unless %w[m M].any?(ans)
+  end
+  main_menu
+end
+
+
+def search_name(array, input)
+  my_array = [[],[]]
+  array.each do |item|
+    if item.text.include?(input.capitalize)
+      my_array[0].push(item.text)
+      my_array[1].push(item.attributes['href'].value)
+    end
+  end
+  
+  until input.nil? || input == ''
+    @input_checker.display_clear
+    boxing("#{my_array[0].count} results found with #{input}")
+    my_array[0].each_with_index{|item, index| puts "#{index + 1}. #{item}"}
+    boxing('Enter a number to go to the movie profile or press enter to search again')
+    input = @input_checker.search_result_check(gets.chomp, my_array[0].count)
+    if !input.nil? && input != ''
+      movie_info(my_array[1][input.to_i - 1])
+    end
+  end
+  
+end
+
 def movie_index_by
   index = @movies.menu_index
-  amount = @movies.movies_amount
   @input_checker.display_clear
-  puts '+---------------------+'
-  puts 'Select an option'
-  index[0].each_with_index { |item, i| puts "#{i + 1}. #{item} (#{amount[i]} movies)"}
-  puts '+---------------------+'
-  ans = @input_checker.number_checker(gets.chomp.to_i, 1, index.length + 1)
+  puts '+----------------------------+'
+  puts '| Movies by Index            |'
+  puts '+----------------------------+'
+  index[0].each_with_index { |item, i| puts "#{i + 1}. #{item}" }
+  puts '+----------------------------+'
+  puts "| Select and Option(1 to #{index[0].count}) |"
+  puts '+----------------------------+'
+  ans = @input_checker.number_checker(gets.chomp.to_i, 1, index[0].count)
   link = ''
   name = ''
-  @movies.menu_index[0].each_with_index {|item, index| name = item if index == (ans - 1)}
-  @movies.menu_index[1].each_with_index {|item, index| link = item if index == (ans - 1)}
+  @movies.menu_index[0].each_with_index do |item, i|
+    name = item if i == (ans - 1)
+  end
+  @movies.menu_index[1].each_with_index do |item, i|
+    link = item if i == (ans - 1)
+  end
   print_movies(link, name)
 end
 
 def print_movies(link, name)
   array = @movies.menu_movies(link)
+  ans = ['x']
   i = 0
-  while i < array[0].length
+  while i < array.length && %w[m M].none?(ans[0])
+    @input_checker.display_clear
+    page = array.count / 20
+    boxing("All movies for #{name} and a total of #{array.count} movies")
+
+    array.each_with_index do |item, index|
+      puts "#{index + 1}. #{item.text}" if index >= i && index <= (i + 19)
+    end
+    boxing("Page #{(i + 20) / 20} of #{page} pages")
+    print_movies_options
+    ans = @input_checker.menu_list_checker(gets.chomp, i + 1, i + 20, i, page)
+    i = ans[1]
+    s = []
+    (i + 20 + 1).times{|item| s.push(item.to_s)}
+    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if s.any?(ans[0])
+  end
+  main_menu
+end
+
+def movie_info(link)
+  array = @movies.movie_profile(link)
   @input_checker.display_clear
-  p array[0].length
-  puts '+-------------------------------+'
-  puts "All movies for #{name} from #{i + 1} to #{i + 20}"
-  array[0].each_with_index {|item, index| puts "#{index + 1}. #{item}" if index >= i && index <= (i + 19) }
-  puts '+-------------------------------+'
-  puts 'Press B for previous result of N for next:'
-  puts '+-------------------------------+'
-  ans = @input_checker.number_checker(gets.chomp, i + 1, i + 20)
-  
-  if ans.upcase == "B"
-    i += 20 
-  elsif ans.upcase == 'N'
-    i -= 20
+  boxing(array[0][0].to_s)
+  puts ''
+  array[1].each_with_index do |item, index|
+    puts "   #{index + 1}.#{item}"
+    print '+---'
+    index.to_s.split('').each{|i| print '-'}
+    item.split('').each{|i| print '-'}
+    puts '---+'
+    array[2][index + 1].each{|itemb| puts "-> #{itemb}" }
+    puts ''
   end
+  puts '+--------Info----------+'
+  puts array[3]
+  puts ''
+  print 'Press enter to go back...'
+  gets
+end
 
-  end
-
+def print_movies_options
+  puts '+--------------------------------------------+'
+  puts '| Press B for previous results               |'
+  puts '| Press N for next results                   |'
+  puts '| Press M to go back to the Menu             |'
+  puts '+--------------------------------------------+'
 end
 
 def exit_game
-  puts 'Good Bye'
+  @input_checker.display_clear
+  puts '+--------------------------------------+'
+  puts '| Thank you for using this web scraper |'
+  puts '|                             Good Bye |'
+  puts '+--------------------------------------+'
+end
+
+def boxing(input)
+  print '+'
+  input.length.times { print '-' }
+  puts '+'
+  puts "|#{input}|"
+  print '+'
+  input.length.times { print '-' }
+  puts '+'
 end
 
 def main_screen
   @input_checker.display_clear
-  puts 'hello welcome to wikipedia movie web scrapper'
+  puts '+----------------------------------------------------------------+'
+  puts '|     *lll   lll   lll     lllllllllll       llllllllll          |'
+  puts '|      lll   lll   lll     llll              llll    llll        |'
+  puts '|      lll   lll   lll     lllllllll         lllllllllll         |'
+  puts '|       llll lll  llll     llll              llll    llll        |' 
+  puts '|         llllllllllll     lllllllllll       llllllllll          |'
+  puts '|                                                                |'
+  puts '|   SSSSS    CCCCCC   RRRR      AAA    PPPP   EEEEE   RRRR       |'
+  puts '|  SS        CC       R   R    A   A   P   P  E       R   R      |'
+  puts '|   SSSSS    CC       RRRR     AAAAA   PPPP   EEEE    RRRR       |'
+  puts '|       SS   CC       R   R    A   A   P      E       R   R      |'
+  puts '|   SSSSS    CCCCCC   R    R   A   A   P      EEEEE   R   R      |'
+  puts '|                                                                |'
+  puts '+----------------------------------------------------------------+' 
   puts 'press any key to continue'
   gets
   main_menu
