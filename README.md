@@ -51,26 +51,33 @@ ruby bin/main.rb
 ### Usage
 
 Its simple, once open you find yourself on the welcome page:
+
 <img src="./lib/welcomescreen.png">
 
 Once you press enter you will find the menu screen:
+
 <img src="./lib/menu.png">
 
 To select the options you need to enter the number that appear next to each option, if choosing 1 this will take you to the index:
+
 <img src="./lib/indexmenu.png">
 
 Choose any of this option to get a list of movies base on the option selected(Ex. 2):
+
 <img src="./lib/moviesindex.png">
 
 Now on top you will see the amount of movies on this list, also you can see the list by pages do you dont need to scroll to find a movie, and you can change pages using n(next) or b(back), also you can go backj to menu by pressing m, then to se the movie profile you need to enter the number next to it(Ex. 19):
+
 <img src="./lib/movieprofile.png">
 
 Now you can see all the basic details of the movie including a brief info about it. To go back just press enter.
 
 When you select the seach option on the menu, you first will have to wait a couple of seconds after the program gets all the movies from the page, then it will ask you to enter the name of the movie, like this:
+
 <img src="./lib/searchscreen.png">
 
 Enter a word(Ex. batman) and this will returna all the movies that contains that word on their name:
+
 <img src="./lib/searchresults.png">
 
 Now you only have to enter the number of the movie you want to see the info off, just like we saw before, if you want to look for another movie just press enter, and it will ask you again to enter a name, to go back to the menu just press m on the seach by name screen.
