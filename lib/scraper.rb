@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require_relative './input_checker'
 require 'nokogiri'
 require 'httparty'
 require 'byebug'
@@ -22,29 +25,52 @@ class Scrapper
     @index
   end
 
-  def movies_amount
-    amount = []
-    @index[1].each_with_index do |item, i|
-      unparsed = HTTParty.get("https://en.wikipedia.org/#{@index[1][i]}")
-      parsed = Nokogiri::HTML(unparsed)
-      amount[i] = parsed.css('div.div-col').css('a').count
+  def all_movies
+    allmoviesarray = []
+    input = Imputchecker.new
+
+    index = @parsed.css('table.wikitable').css('tr').css('td').css('a')
+    index.pop
+    index.pop
+    index.pop
+    index.each_with_index do |item, index|
+      input.display_clear
+      puts index
+      unparsed = HTTParty.get("https://en.wikipedia.org#{item.attributes['href'].value}")
+      allmovies = Nokogiri::HTML(unparsed)
+
+      allmovies.css('div.div-col').css('a').each do |itemb|
+        allmoviesarray.push(itemb)
+      end
     end
-    amount
+    allmoviesarray
   end
 
   def menu_movies(input)
-    unparsed = HTTParty.get("https://en.wikipedia.org/#{input}")
+    unparsed = HTTParty.get("https://en.wikipedia.org#{input}")
     parsed = Nokogiri::HTML(unparsed)
-    name = []
-    links = []
-    result = []
     array = parsed.css('div.div-col').css('a')
-    array.length.times do |i|
-      name.push(array[i].text)
-      links.push(array[i].attributes['href'].value)
+    array
+  end
+
+  def movie_profile(input)
+    unparsed = HTTParty.get("https://en.wikipedia.org#{input}")
+    parsed = Nokogiri::HTML(unparsed)
+    array = []
+    movieinfo = [[], [], [], []]
+    movieinfo[0].push(parsed.css('h1.firstHeading').text)
+
+    parsed.css('table.infobox').css('tr').each do |item|
+      unless parsed.css('table.haudio').css('tr').css('th').text.include?(item.css('th').text)
+        movieinfo[1].push(item.css('th').text)
+      end
+      unless parsed.css('table.haudio').css('tr').css('th').text.include?(item.css('th').text)
+        movieinfo[2].push(item.css('td').text.split("\n"))
+      end
     end
-    result.push(name)
-    result.push(links)
-    result
+    movieinfo[1].shift
+    movieinfo[2].each { |item| item.delete('') if item.is_a?(Array) }
+    movieinfo[3].push(parsed.css('div.mw-parser-output').css('p')[1].text)
+    movieinfo
   end
 end

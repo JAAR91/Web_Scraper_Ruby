@@ -13,7 +13,7 @@ def main_menu
   puts '+-----------------------------+'
   puts '1. Show index'
   puts '2. Search options'
-  puts '3. Instructions'
+  puts '3. About'
   puts '4. Credits'
   puts '5. Exit'
   puts '+------------------------------+'
@@ -26,15 +26,54 @@ def main_menu
   when 2
     search_options
   when 3
+    instructions_menu
   when 4
+    credits
   when 5
     exit_game
   end
 end
 
+def credits
+  
+end
+
+def instructions_menu
+  boxing('  About Movie Web Scraper  ')
+  puts '+----------------------------+'
+  puts '|This program was made as a  |'
+  puts '|project to scrape a page    |'
+  puts '|about movies                |'
+  puts '|                            |'
+  puts '|The main program contains   |'
+  puts '|two options to search       |'
+  puts '|                            |' 
+  puts '|The first one is a index    |'
+  puts '|in alphabetical order to    |'
+  puts '|search movies by index      |'
+  puts '|the result will be returned |'
+  puts '|in pages, with 20 results   |'
+  puts '|per page, you either choose |'
+  puts '|a movie from the results    |'
+  puts '|displayed or go back and    |'
+  puts '|forward on the pages        |'
+  puts '|                            |'
+  puts '|The second option is a      |'
+  puts '|search option by name, the  |'
+  puts '|result will show the amount |'
+  puts '|of movies that include that |'
+  puts '|name and an option to open  |'
+  puts '|the profile for each of the |'
+  puts '|results                     |'
+  puts '+----------------------------+'
+  print 'Press enter to go back.......'
+  gets
+  main_menu
+end
+
 def search_options
   array = @movies.all_movies
-  
+
   ans = nil
   until %w[m M].any?(ans)
     @input_checker.display_clear
@@ -50,27 +89,23 @@ def search_options
   main_menu
 end
 
-
 def search_name(array, input)
-  my_array = [[],[]]
+  my_array = [[], []]
   array.each do |item|
     if item.text.include?(input.capitalize)
       my_array[0].push(item.text)
       my_array[1].push(item.attributes['href'].value)
     end
   end
-  
+
   until input.nil? || input == ''
     @input_checker.display_clear
     boxing("#{my_array[0].count} results found with #{input}")
-    my_array[0].each_with_index{|item, index| puts "#{index + 1}. #{item}"}
+    my_array[0].each_with_index { |item, index| puts "#{index + 1}. #{item}" }
     boxing('Enter a number to go to the movie profile or press enter to search again')
     input = @input_checker.search_result_check(gets.chomp, my_array[0].count)
-    if !input.nil? && input != ''
-      movie_info(my_array[1][input.to_i - 1])
-    end
+    movie_info(my_array[1][input.to_i - 1]) if !input.nil? && input != ''
   end
-  
 end
 
 def movie_index_by
@@ -112,8 +147,10 @@ def print_movies(link, name)
     ans = @input_checker.menu_list_checker(gets.chomp, i + 1, i + 20, i, page)
     i = ans[1]
     s = []
-    (i + 20 + 1).times{|item| s.push(item.to_s)}
-    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if s.any?(ans[0])
+    (i + 20 + 1).times { |item| s.push(item.to_s) }
+    if s.any?(ans[0])
+      movie_info(array[(ans[0].to_i - 1)].attributes['href'].value)
+    end
   end
   main_menu
 end
@@ -126,10 +163,10 @@ def movie_info(link)
   array[1].each_with_index do |item, index|
     puts "   #{index + 1}.#{item}"
     print '+---'
-    index.to_s.split('').each{|i| print '-'}
-    item.split('').each{|i| print '-'}
+    index.to_s.split('').each { |_i| print '-' }
+    item.split('').each { |_i| print '-' }
     puts '---+'
-    array[2][index + 1].each{|itemb| puts "-> #{itemb}" }
+    array[2][index + 1].each { |itemb| puts "-> #{itemb}" }
     puts ''
   end
   puts '+--------Info----------+'
@@ -171,7 +208,7 @@ def main_screen
   puts '|     *lll   lll   lll     lllllllllll       llllllllll          |'
   puts '|      lll   lll   lll     llll              llll    llll        |'
   puts '|      lll   lll   lll     lllllllll         lllllllllll         |'
-  puts '|       llll lll  llll     llll              llll    llll        |' 
+  puts '|       llll lll  llll     llll              llll    llll        |'
   puts '|         llllllllllll     lllllllllll       llllllllll          |'
   puts '|                                                                |'
   puts '|   SSSSS    CCCCCC   RRRR      AAA    PPPP   EEEEE   RRRR       |'
@@ -180,7 +217,7 @@ def main_screen
   puts '|       SS   CC       R   R    A   A   P      E       R   R      |'
   puts '|   SSSSS    CCCCCC   R    R   A   A   P      EEEEE   R   R      |'
   puts '|                                                                |'
-  puts '+----------------------------------------------------------------+' 
+  puts '+----------------------------------------------------------------+'
   puts 'press any key to continue'
   gets
   main_menu
