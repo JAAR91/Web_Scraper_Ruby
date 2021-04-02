@@ -8,6 +8,7 @@ class Progress
   def screen_load(porcentage, index, indexa)
     @input.display_clear
     puts '+----------------------------------------------+'
+    puts '|                                              |'
     print '|    Loading Movies'
     print "  #{porcentage.to_i}" if porcentage < 10
     print " #{porcentage.to_i}" if porcentage > 9 && porcentage < 100
@@ -19,6 +20,7 @@ class Progress
       print '░' if j >= ((indexa + 1) * 2)
     end
     puts '   |'
+    puts '|                                              |'
     puts '+----------------------------------------------+'
   end
 end
