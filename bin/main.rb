@@ -161,9 +161,9 @@ def print_movies(link, name)
   array = @movies.menu_movies(link)
   ans = ['x']
   i = 0
-  while i < array.length && %w[m M].none?(ans[0])
+  while %w[m M].none?(ans[0])
     @input_checker.display_clear
-    page = array.count / 20
+    page = page_count(array.count)
     boxing("All movies for #{name} and a total of #{array.count} movies")
 
     array.each_with_index do |item, index|
@@ -178,6 +178,14 @@ def print_movies(link, name)
     movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if s.any?(ans[0])
   end
   main_menu
+end
+
+def page_count(items_c)
+  if (items_c % 20).zero?
+    items_c / 20
+  else
+    (items_c / 20) + 1
+  end
 end
 
 def movie_info(link)

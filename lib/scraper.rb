@@ -37,14 +37,12 @@ class Scraper
   end
 
   def menu_movies(input)
-    unparsed = HTTParty.get("https://en.wikipedia.org#{input}")
-    parsed = Nokogiri::HTML(unparsed)
+    parsed = page_scrap(input)
     parsed.css('div.div-col').css('a')
   end
 
   def movie_profile(input)
-    unparsed = HTTParty.get("https://en.wikipedia.org#{input}")
-    parsed = Nokogiri::HTML(unparsed)
+    parsed = page_scrap(input)
     array = []
     movieinfo = [[], [], [], []]
     movieinfo[0].push(parsed.css('h1.firstHeading').text)

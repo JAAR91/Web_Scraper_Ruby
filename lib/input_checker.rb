@@ -56,7 +56,7 @@ class Inputchecker
 
   def back_next(input, j_var, page)
     if %w[b B].any?(input)
-      return page * 20 if j_var.zero?
+      return (page - 1) * 20 if j_var.zero?
       return j_var - 20 if j_var > 1
     elsif %w[n N].any?(input)
       return j_var + 20 if ((j_var + 20) / 20) < page

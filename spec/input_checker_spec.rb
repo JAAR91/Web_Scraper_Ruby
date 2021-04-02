@@ -1,8 +1,8 @@
 # spec..lib/input_checker.rb
 require './lib/input_checker'
 
-describe Imputchecker do
-  let(:input) { Imputchecker.new }
+describe Inputchecker do
+  let(:input) { Inputchecker.new }
   describe '#search_result_check' do
     it 'checks the input entered and verify its betwen 1 and the parameter entered' do
       expect(input.search_result_check('5', 10)).to eql('5')
