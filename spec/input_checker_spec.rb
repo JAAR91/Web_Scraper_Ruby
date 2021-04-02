@@ -72,7 +72,7 @@ describe Inputchecker do
 
   describe '#back_next' do
     it 'returns the new positition of the page when on index' do
-      expect(input.back_next('b', 0, 2)).to eql(40)
+      expect(input.back_next('b', 0, 4)).to eql(60)
     end
   end
 
