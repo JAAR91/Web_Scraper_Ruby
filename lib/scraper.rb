@@ -1,65 +1,39 @@
 require_relative './input_checker'
+require_relative './screen_load'
 require 'nokogiri'
 require 'httparty'
 
-# class Scrapper
-class Scrapper
+class Scraper
+  attr_reader :parsed
+
   def initialize
-    unparsed = HTTParty.get('https://en.wikipedia.org/wiki/Lists_of_films#Alphabetical_indices')
-    @parsed = Nokogiri::HTML(unparsed)
+    @parsed = page_scrap
+    @load = Progress.new
   end
 
   def menu_index
-    @index = []
-    name = []
-    links = []
+    index = [[], []]
     array = @parsed.css('table.wikitable').css('tr').css('td').css('a')
     (array.length - 3).times do |i|
-      name.push(array[i].text)
-      links.push(array[i].attributes['href'].value)
+      index[0].push(array[i].text)
+      index[1].push(array[i].attributes['href'].value)
     end
-    @index.push(name)
-    @index.push(links)
-    @index
+    index
   end
 
   def all_movies
     allmoviesarray = []
-    index = @parsed.css('table.wikitable').css('tr').css('td').css('a')
-    index.pop
-    index.pop
-    index.pop
+    index = menu_index
     porcentage = 0
-    index.each_with_index do |item, indexa|
-      porcentage = ((indexa.to_f + 1) / index.count.to_f) * 100
-      screen_load(porcentage, index.count, indexa)
-      value = item.attributes['href'].value
-      unparsed = HTTParty.get("https://en.wikipedia.org#{value}")
-      allmovies = Nokogiri::HTML(unparsed)
-
+    index[1].each_with_index do |item, indexa|
+      porcentage = ((indexa.to_f + 1) / index[1].count.to_f) * 100
+      @load.screen_load(porcentage, index[1].count, indexa)
+      allmovies = page_scrap(item)
       allmovies.css('div.div-col').css('a').each do |itemb|
         allmoviesarray.push(itemb)
       end
     end
     allmoviesarray
-  end
-
-  def screen_load(porcentage, index, indexa)
-    input = Imputchecker.new
-    input.display_clear
-    puts '+----------------------------------------------+'
-    print '|    Loading Movies'
-    print "  #{porcentage.to_i}" if porcentage < 10
-    print " #{porcentage.to_i}" if porcentage > 9 && porcentage < 100
-    print porcentage.to_i.to_s if porcentage > 99
-    puts '%                        |'
-    print '|   '
-    (index * 2).times do |j|
-      print '▓' if j < ((indexa + 1) * 2)
-      print '░' if j >= ((indexa + 1) * 2)
-    end
-    puts '   |'
-    puts '+----------------------------------------------+'
   end
 
   def menu_movies(input)
@@ -85,5 +59,16 @@ class Scrapper
     movieinfo[2].each { |item| item.delete('') if item.is_a?(Array) }
     movieinfo[3].push(parsed.css('div.mw-parser-output').css('p')[1].text)
     movieinfo
+  end
+
+  private
+
+  def page_scrap(input = nil)
+    unparsed = if input.nil?
+                 HTTParty.get('https://en.wikipedia.org/wiki/Lists_of_films#Alphabetical_indices')
+               else
+                 HTTParty.get("https://en.wikipedia.org#{input}")
+               end
+    Nokogiri::HTML(unparsed)
   end
 end

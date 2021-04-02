@@ -1,8 +1,8 @@
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
 
-@input_checker = Imputchecker.new
-@movies = Scrapper.new
+@input_checker = Inputchecker.new
+@movies = Scraper.new
 
 def main_menu
   @input_checker.display_clear

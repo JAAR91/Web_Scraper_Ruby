@@ -1,4 +1,4 @@
-class Imputchecker
+class Inputchecker
   require 'rbconfig'
   include RbConfig
 
