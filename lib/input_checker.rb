@@ -1,6 +1,3 @@
-# rubocop: disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength
-
-# class inputchecker
 class Imputchecker
   require 'rbconfig'
   include RbConfig
@@ -34,36 +31,38 @@ class Imputchecker
     input
   end
 
-  def menu_list_checker(input, initial, last, j_var, page)
+  def checking_array(initial)
     array = %w[B N b n m M]
+    20.times { |i| array.push((i + initial).to_s) }
+    array
+  end
+
+  def menu_list_checker(input, initial, last, j_var, page)
     result = []
     i_pass = 0
-    20.times do |i|
-      array.push((i + initial).to_s)
-    end
     until i_pass.positive?
-      if input.nil? || array.none?(input)
+      if input.nil? || checking_array(initial).none?(input)
         puts "Please enter a value from #{initial} to #{last} or N,B or M"
         input = gets.chomp
-      elsif %w[b B].any?(input) && j_var.zero?
-        puts 'You are already on the first page'
-        input = gets.chomp
-      elsif %w[n N].any?(input) && ((j_var + 20) / 20) == page
-        puts 'You are already on the last page'
-        input = gets.chomp
-      elsif %w[b B].any?(input) && j_var > 1
-        j_var -= 20
-        i_pass = 1
-      elsif %w[n N].any?(input) && ((j_var + 20) / 20) < page
-        j_var += 20
-        i_pass = 1
       else
         i_pass = 1
       end
+      j_var = back_next(input, j_var, page)
     end
     result.push(input)
     result.push(j_var)
     result
+  end
+
+  def back_next(input, j_var, page)
+    if %w[b B].any?(input)
+      j_var = page * 20 if j_var.zero?
+      j_var -= 20 if j_var > 1
+    elsif %w[n N].any?(input)
+      j_var += 20 if ((j_var + 20) / 20) < page
+      j_var = 0 if ((j_var + 20) / 20) == page
+    end
+    j_var
   end
 
   def number_checker(input, initial, last)
@@ -80,5 +79,3 @@ class Imputchecker
     input
   end
 end
-
-# rubocop: enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength

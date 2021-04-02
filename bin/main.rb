@@ -1,5 +1,3 @@
-# rubocop: disable Metrics/MethodLength, Metrics/CyclomaticComplexity
-
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
 
@@ -8,17 +6,7 @@ require_relative '../lib/input_checker'
 
 def main_menu
   @input_checker.display_clear
-  puts '+-----------------------------+'
-  puts '|          Main Menu          |'
-  puts '+-----------------------------+'
-  puts '1. Show index'
-  puts '2. Search options'
-  puts '3. About'
-  puts '4. Credits'
-  puts '5. Exit'
-  puts '+------------------------------+'
-  puts '| select a number from 1 to 5  |'
-  puts '+------------------------------+'
+  print_menu
   input = @input_checker.number_checker(gets.chomp.to_i, 1, 5)
   case input
   when 1
@@ -32,6 +20,20 @@ def main_menu
   when 5
     exit_game
   end
+end
+
+def print_menu
+  puts '+-----------------------------+'
+  puts '|          Main Menu          |'
+  puts '+-----------------------------+'
+  puts '1. Show index'
+  puts '2. Search options'
+  puts '3. About'
+  puts '4. Credits'
+  puts '5. Exit'
+  puts '+------------------------------+'
+  puts '| select a number from 1 to 5  |'
+  puts '+------------------------------+'
 end
 
 def credits
@@ -52,6 +54,13 @@ end
 def instructions_menu
   @input_checker.display_clear
   boxing('   About Movie Web Scraper  ')
+  instructions_partone
+  instructions_parttwo
+  gets
+  main_menu
+end
+
+def instructions_partone
   puts '+----------------------------+'
   puts '|This program was made as a  |'
   puts '|project to scrape a page    |'
@@ -60,11 +69,14 @@ def instructions_menu
   puts '|The main program contains   |'
   puts '|two options to search       |'
   puts '|                            |'
-  puts '|The first one is a index    |'
+  puts '|The first one is an index   |'
   puts '|in alphabetical order to    |'
   puts '|search movies by index      |'
   puts '|the result will be returned |'
   puts '|in pages, with 20 results   |'
+end
+
+def instructions_parttwo
   puts '|per page, you either choose |'
   puts '|a movie from the results    |'
   puts '|displayed or go back and    |'
@@ -79,13 +91,10 @@ def instructions_menu
   puts '|results                     |'
   puts '+----------------------------+'
   print 'Press enter to go back.......'
-  gets
-  main_menu
 end
 
 def search_options
   array = @movies.all_movies
-
   ans = nil
   until %w[m M].any?(ans)
     @input_checker.display_clear
@@ -96,7 +105,10 @@ def search_options
     puts '|or enter m to go back to the menu               |'
     puts '+------------------------------------------------+'
     ans = @input_checker.empty_checker(gets.chomp)
-    search_name(array, ans) unless %w[m M].any?(ans)
+    unless %w[m M].any?(ans)
+      results_array = search_name(array, ans)
+      print_search_results(results_array, ans)
+    end
   end
   main_menu
 end
@@ -109,7 +121,10 @@ def search_name(array, input)
       my_array[1].push(item.attributes['href'].value)
     end
   end
+  my_array
+end
 
+def print_search_results(my_array, input)
   until input.nil? || input == ''
     @input_checker.display_clear
     boxing("#{my_array[0].count} results found with #{input}")
@@ -173,8 +188,8 @@ def movie_info(link)
   array[1].each_with_index do |item, index|
     puts "   #{index + 1}.#{item}"
     print '+---'
-    index.to_s.split('').each { |_i| print '-' }
-    item.split('').each { |_i| print '-' }
+    index.to_s.chars.each { |_i| print '-' }
+    item.chars.each { |_i| print '-' }
     puts '---+'
     array[2][index + 1].each { |itemb| puts "-> #{itemb}" }
     puts ''
@@ -198,7 +213,7 @@ def exit_game
   @input_checker.display_clear
   puts '+--------------------------------------+'
   puts '| Thank you for using this web scraper |'
-  puts '|                             Good Bye |'
+  puts '|                             Good-Bye |'
   puts '+--------------------------------------+'
 end
 
@@ -232,7 +247,5 @@ def main_screen
   gets
   main_menu
 end
-
-# rubocop: enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
 main_screen
