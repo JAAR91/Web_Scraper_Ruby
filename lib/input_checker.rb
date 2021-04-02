@@ -56,11 +56,11 @@ class Imputchecker
 
   def back_next(input, j_var, page)
     if %w[b B].any?(input)
-      j_var = page * 20 if j_var.zero?
-      j_var -= 20 if j_var > 1
+      return page * 20 if j_var.zero?
+      return j_var - 20 if j_var > 1
     elsif %w[n N].any?(input)
-      j_var += 20 if ((j_var + 20) / 20) < page
-      j_var = 0 if ((j_var + 20) / 20) == page
+      return j_var + 20 if ((j_var + 20) / 20) < page
+      return 0 if ((j_var + 20) / 20) == page
     end
     j_var
   end

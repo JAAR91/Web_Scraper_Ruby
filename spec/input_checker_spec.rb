@@ -10,7 +10,7 @@ describe Imputchecker do
   end
 
   describe '#search_result_check' do
-    it 'checks the input entered its not empty' do
+    it 'check for numbers and empty strings' do
       expect(input.empty_checker('Hello World')).to eql('Hello World')
     end
   end
@@ -42,6 +42,43 @@ describe Imputchecker do
   describe '#number_checker' do
     it 'checks the input entered its a number betwen the numbers requested' do
       expect(input.number_checker(11, 0, 20)).to eql(11)
+    end
+  end
+
+  describe '#empty_checker' do
+    it 'makes sure input is never empty and the returns the input entered' do
+      expect(input.empty_checker('hi')).to eql('hi')
+    end
+  end
+
+  describe '#checking_array' do
+    it 'return an array of numbers as strings and letters b n or m' do
+      expect(input.checking_array(20)).to eql(%w[B N b n m M 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38
+                                                 39])
+    end
+  end
+
+  describe '#back_next' do
+    it 'returns the new positition of the page when on index' do
+      expect(input.back_next('n', 20, 36)).to eql(40)
+    end
+  end
+
+  describe '#back_next' do
+    it 'returns the new positition of the page when on index' do
+      expect(input.back_next('b', 20, 36)).to eql(0)
+    end
+  end
+
+  describe '#back_next' do
+    it 'returns the new positition of the page when on index' do
+      expect(input.back_next('b', 0, 2)).to eql(40)
+    end
+  end
+
+  describe '#back_next' do
+    it 'returns the new positition of the page when on index' do
+      expect(input.back_next('n', 20, 2)).to eql(0)
     end
   end
 end
