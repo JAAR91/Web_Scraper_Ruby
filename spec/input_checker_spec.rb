@@ -84,8 +84,8 @@ describe Inputchecker do
     end
 
     it 'return an array of numbers as strings and letters b n or m' do
-      expect(input.checking_array(21)).not_to eql(%w[B N b n m M 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38
-                                                 39])
+      expect(input.checking_array(21)).not_to eql(%w[B N b n m M 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37
+                                                     38 39])
     end
   end
 

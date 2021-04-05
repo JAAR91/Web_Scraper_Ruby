@@ -1,5 +1,6 @@
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
+require 'byebug'
 
 @input_checker = Inputchecker.new
 @movies = Scraper.new
@@ -33,7 +34,8 @@ def print_menu
   puts '2. Search options'
   puts '3. About'
   puts '4. Credits'
-  puts '5. Exit'
+  puts '5. Bookmarks'
+  puts '6. Exit'
   puts '+------------------------------+'
   puts '| select a number from 1 to 5  |'
   puts '+------------------------------+'
@@ -42,7 +44,7 @@ end
 def main_menu
   @input_checker.display_clear
   print_menu
-  input = @input_checker.number_checker(gets.chomp.to_i, 1, 5)
+  input = @input_checker.number_checker(gets.chomp.to_i, 1, 6)
   case input
   when 1
     movie_index_by
@@ -53,6 +55,8 @@ def main_menu
   when 4
     credits
   when 5
+    movie_bookmarks
+  when 6
     exit_game
   end
 end
@@ -121,6 +125,11 @@ def credits
   print 'Press enter to go back...'
   gets
   main_menu
+end
+
+def movie_bookmarks
+  array = @movies.movies_viewed
+  byebug
 end
 
 def exit_game

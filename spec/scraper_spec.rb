@@ -15,25 +15,29 @@ describe Scraper do
       '/wiki/List_of_films:_T', '/wiki/List_of_films:_U%E2%80%93W', '/wiki/List_of_films:_X%E2%80%93Z']]
   end
 
-  # describe '#menu_index' do
-  #  it 'return am array with all index options on the page and its links' do
-  #    expect(scraper.menu_index[1]).to match_array(array[1])
-  #  end
+  describe '#menu_index' do
+    it 'return am array with all index options on the page and its links' do
+      expect(scraper.menu_index[1]).to match_array(array[1])
+    end
 
-  #  it 'return am array with all index options on the page and its links' do
-  #    expect(scraper.menu_index[0].class).to eq(Array)
-  #  end
-  # end
+    it 'return am array with all index options on the page and its links' do
+      expect(scraper.menu_index[0].class).to eq(Array)
+    end
+  end
 
-  # describe '#all_movies' do
-  #  it 'returns a array with two arrays, one for the name fo the movies and another one for the links' do
-  #    expect(scraper.all_movies.class).to eq(Array)
-  #  end
-  # end
+  describe '#all_movies' do
+    it 'returns a array with two arrays, one for the name fo the movies and another one for the links' do
+      expect(scraper.all_movies.class).to eq(Array)
+    end
+  end
 
   describe '#menu_movies' do
-    it 'returns an array with the names of the movies for index' do
+    it 'returns a nokogiri format array' do
       expect(scraper.menu_movies('/wiki/List_of_films:_numbers').class).to eq(Nokogiri::XML::NodeSet)
+    end
+
+    it 'returns a nokogiri format array' do
+      expect(scraper.menu_movies('/wiki/List_of_films:_numbers').class).not_to eq(Array)
     end
   end
 end

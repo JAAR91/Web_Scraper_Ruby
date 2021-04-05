@@ -4,11 +4,14 @@ require 'nokogiri'
 require 'httparty'
 
 class Scraper
+  attr_accessor :movies
   attr_reader :parsed
 
   def initialize
     @parsed = page_scrap
     @load = Progress.new
+    @movies = []
+    @allmoviesarray = []
   end
 
   def menu_index
@@ -22,18 +25,19 @@ class Scraper
   end
 
   def all_movies
-    allmoviesarray = []
-    index = menu_index
-    porcentage = 0
-    index[1].each_with_index do |item, indexa|
-      porcentage = ((indexa.to_f + 1) / index[1].count.to_f) * 100
-      @load.screen_load(porcentage, index[1].count, indexa)
-      allmovies = page_scrap(item)
-      allmovies.css('div.div-col').css('a').each do |itemb|
-        allmoviesarray.push(itemb)
+    if @allmoviesarray.count.zero?
+      index = menu_index
+      porcentage = 0
+      index[1].each_with_index do |item, indexa|
+        porcentage = ((indexa.to_f + 1) / index[1].count.to_f) * 100
+        @load.screen_load(porcentage, index[1].count, indexa)
+        allmovies = page_scrap(item)
+        allmovies.css('div.div-col').css('a').each do |itemb|
+          @allmoviesarray.push(itemb)
+        end
       end
     end
-    allmoviesarray
+    @allmoviesarray
   end
 
   def menu_movies(input)
@@ -56,7 +60,12 @@ class Scraper
     movieinfo[1].shift
     movieinfo[2].each { |item| item.delete('') if item.is_a?(Array) }
     movieinfo[3].push(parsed.css('div.mw-parser-output').css('p')[1].text)
+    @movies.push(movieinfo)
     movieinfo
+  end
+
+  def movies_viewed
+    @movies
   end
 
   private
