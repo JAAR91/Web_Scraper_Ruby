@@ -4,7 +4,6 @@ require 'nokogiri'
 require 'httparty'
 
 class Scraper
-  attr_accessor :movies
   attr_reader :parsed
 
   def initialize

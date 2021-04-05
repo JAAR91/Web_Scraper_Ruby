@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Inputchecker
   require 'rbconfig'
   include RbConfig
@@ -31,38 +33,18 @@ class Inputchecker
     input
   end
 
-  def checking_array(initial)
-    array = %w[B N b n m M]
-    20.times { |i| array.push((i + initial).to_s) }
+  def checking_array(page, my_array)
+    array = my_array
+    20.times { |i| array.push(((page * 20) + i + 1).to_s) }
     array
   end
 
-  def menu_list_checker(input, initial, last, j_var, page)
-    result = []
-    i_pass = 0
-    until i_pass.positive?
-      if input.nil? || checking_array(initial).none?(input)
-        puts "Please enter a value from #{initial} to #{last} or N,B or M"
-        input = gets.chomp
-      else
-        i_pass = 1
-      end
-      j_var = back_next(input, j_var, page)
+  def menu_list_checker(input, page, array)
+    until checking_array(page, array).any?(input)
+      puts "Please enter a value from #{page * 20} to #{(page * 20) + 20} or N,B or M"
+      input = gets.chomp
     end
-    result.push(input)
-    result.push(j_var)
-    result
-  end
-
-  def back_next(input, j_var, page)
-    if %w[b B].any?(input)
-      return (page - 1) * 20 if j_var.zero?
-      return j_var - 20 if j_var > 1
-    elsif %w[n N].any?(input)
-      return j_var + 20 if ((j_var + 20) / 20) < page
-      return 0 if ((j_var + 20) / 20) == page
-    end
-    j_var
+    input
   end
 
   def number_checker(input, initial, last)

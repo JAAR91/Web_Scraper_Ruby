@@ -129,7 +129,43 @@ end
 
 def movie_bookmarks
   array = @movies.movies_viewed
-  byebug
+  ans = nil
+  page = 0
+  t_page = page_count(array.count)
+  until %w[m M].any?(ans)
+    @input_checker.display_clear
+    boxing("Movies Bookmarked a total of #{array.count} movies saved")
+    puts "+-------------page #{page + 1} of #{t_page}----------------+"
+    print_movies_bookmarks(array, page)
+    puts "+-------------page #{page + 1} of #{t_page}----------------+"
+    movie_bookmarks_options
+    ans = @input_checker.menu_list_checker(gets.chomp, page, %w[a A f F m M b B n N])
+    page = page_back(page, t_page) if %w[b B].any?(ans)
+    page = page_next(page, t_page) if %w[n N].any?(ans)
+  end
+  main_menu
+end
+
+def print_movies_bookmarks(array, page)
+  array.each_with_index do |item, index|
+    puts "#{index + 1}. #{item[0][0]}" if index >= page * 20 && index <= ((page * 20) + 20)
+  end
+end
+
+def movie_bookmarks_options
+  puts '+--------------------------------------+'
+  puts '|Enter a number to select a movie      |'
+  puts '|Enter F to see all movies information |'
+  puts '|Enter M to go back to the Menu        |'
+  puts '+--------------------------------------+'
+end
+
+def page_array(page)
+  array = []
+  20.times do |item|
+    array.push(((page * 20) + item + 1).to_s)
+  end
+  array
 end
 
 def exit_game
@@ -166,25 +202,38 @@ end
 
 def print_movies(link, name)
   array = @movies.menu_movies(link)
-  ans = ['x']
-  i = 0
-  while %w[m M].none?(ans[0])
+  ans = 'x'
+  page = 0
+  while %w[m M].none?(ans)
     @input_checker.display_clear
-    page = page_count(array.count)
+    t_page = page_count(array.count)
     boxing("All movies for #{name} and a total of #{array.count} movies")
-
-    array.each_with_index do |item, index|
-      puts "#{index + 1}. #{item.text}" if index >= i && index <= (i + 19)
-    end
-    boxing("Page #{(i + 20) / 20} of #{page} pages")
+    puts "+--------------page #{page + 1} of #{t_page}------------------+"
+    print_movies_index(array, page)
+    puts "+--------------page #{page + 1} of #{t_page}------------------+"
     print_movies_options
-    ans = @input_checker.menu_list_checker(gets.chomp, i + 1, i + 20, i, page)
-    i = ans[1]
-    s = []
-    (i + 20 + 1).times { |item| s.push(item.to_s) }
-    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if s.any?(ans[0])
+    ans = @input_checker.menu_list_checker(gets.chomp, page, %w[B N b n m M])
+    page = page_back(page, t_page) if %w[b B].any?(ans)
+    page = page_next(page, t_page) if %w[n N].any?(ans)
+    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if page_array(page).any?(ans)
   end
   main_menu
+end
+
+def print_movies_index(array, page)
+  array.each_with_index do |item, index|
+    puts "#{index + 1}. #{item.text}" if index >= (page * 20) && index <= ((page * 20) + 19)
+  end
+end
+
+def page_back(page, t_page)
+  return t_page - 1 if page.zero?
+  return page - 1 if page.positive?
+end
+
+def page_next(page, t_page)
+  return 0 if page == (t_page - 1)
+  return page + 1 if page < t_page
 end
 
 def instructions_partone
