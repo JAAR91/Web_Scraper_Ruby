@@ -72,15 +72,7 @@ def movie_index_by
   puts "| Select and Option(1 to #{index[0].count}) |"
   puts '+----------------------------+'
   ans = @input_checker.number_checker(gets.chomp.to_i, 1, index[0].count)
-  link = ''
-  name = ''
-  @movies.menu_index[0].each_with_index do |item, i|
-    name = item if i == (ans - 1)
-  end
-  @movies.menu_index[1].each_with_index do |item, i|
-    link = item if i == (ans - 1)
-  end
-  print_movies(link, name)
+  print_movies(index[0][ans - 1], index[1][ans - 1])
 end
 
 def search_options
@@ -128,7 +120,7 @@ def credits
 end
 
 def movie_bookmarks
-  array = @movies.movies_viewed
+  array = @movies.movies_array
   ans = nil
   page = 0
   t_page = page_count(array.count)
@@ -200,7 +192,7 @@ def print_search_results(my_array, input)
   end
 end
 
-def print_movies(link, name)
+def print_movies(name, link)
   array = @movies.menu_movies(link)
   ans = 'x'
   page = 0
@@ -215,7 +207,7 @@ def print_movies(link, name)
     ans = @input_checker.menu_list_checker(gets.chomp, page, %w[B N b n m M])
     page = page_back(page, t_page) if %w[b B].any?(ans)
     page = page_next(page, t_page) if %w[n N].any?(ans)
-    movie_info(array[(ans[0].to_i - 1)].attributes['href'].value) if page_array(page).any?(ans)
+    movie_info(array[(ans.to_i - 1)].attributes['href'].value) if page_array(page).any?(ans)
   end
   main_menu
 end
@@ -279,23 +271,78 @@ end
 
 def movie_info(link)
   array = @movies.movie_profile(link)
-  @input_checker.display_clear
-  boxing(array[0][0].to_s)
-  puts ''
-  array[1].each_with_index do |item, index|
-    puts "   #{index + 1}.#{item}"
-    print '+---'
-    index.to_s.chars.each { |_i| print '-' }
-    item.chars.each { |_i| print '-' }
-    puts '---+'
-    array[2][index + 1].each { |itemb| puts "-> #{itemb}" }
-    puts ''
+  ans = nil
+  while ans != ''
+    @input_checker.display_clear
+    print_movie_info(array)
+    movie_profile_options(array)
+    ans = @input_checker.movie_profile_checker(gets.chomp, ['b', 'B', ''])
+    @movies.movies_bookmark(array) if %w[b B].any?(ans)
   end
-  puts '+--------Info----------+'
-  puts array[3]
+end
+
+def print_movie_info(array)
+  minus_signs(50)
+  movie_tittle(array[0][0])
+  minus_signs(50)
+  array[1].each_with_index do |item, index|
+    minus_signs(50)
+    puts "#{index + 1}.#{item}:"
+    if array[2][index].is_a?(Array)
+      array[2][index].each do |itemb|
+        puts itemb
+      end
+    else
+      puts array[2][index]
+    end
+  end
+  minus_signs(103)
+  movie_small_info(array[3][0])
+  minus_signs(103)
+end
+
+def movie_tittle(array)
+  print '|'
+  (25 - (array.length / 2)).times { print ' ' }
+  print array.to_s
+  (25 - (array.length / 2)).times { print ' ' }
+  puts '|'
+end
+
+def minus_signs(amount)
+  print '+'
+  amount.times { print '-' }
+  puts '+'
+end
+
+def movie_small_info(array)
+  words_count = 0
+  array.split.each do |item|
+    print ' ' if words_count.zero?
+    print item
+    if words_count >= 90
+      puts ''
+      words_count = 0
+    else
+      print ' '
+      words_count = words_count + item.length + 1
+    end
+  end
   puts ''
-  print 'Press enter to go back...'
-  gets
+end
+
+def movie_profile_options(name)
+  if @movies.movie_duplicate(name) == true
+    puts '+--------------------------------+'
+    puts '|Press Enter to go back          |'
+    puts '|Press B to unbookmark this movie|'
+    puts '+--------------------------------+'
+  else
+    puts '+------------------------------+'
+    puts '|Press Enter to go back        |'
+    puts '|Press B to bookmark this movie|'
+    puts '+------------------------------+'
+  end
 end
 
 def print_movies_options

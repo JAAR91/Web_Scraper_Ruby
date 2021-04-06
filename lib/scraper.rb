@@ -2,6 +2,7 @@ require_relative './input_checker'
 require_relative './screen_load'
 require 'nokogiri'
 require 'httparty'
+require 'byebug'
 
 class Scraper
   attr_reader :parsed
@@ -11,6 +12,7 @@ class Scraper
     @load = Progress.new
     @movies = []
     @allmoviesarray = []
+    @historical = []
   end
 
   def menu_index
@@ -50,21 +52,38 @@ class Scraper
     movieinfo = [[], [], [], []]
     movieinfo[0].push(parsed.css('h1.firstHeading').text)
     array = parsed.css('table.haudio').css('tr').css('th')
-    parsed.css('table.infobox').css('tr').each do |item|
+
+    parsed.css('table.infobox').css('tr').each_with_index do |item, _index|
       unless array.text.include?(item.css('th').text)
         movieinfo[1].push(item.css('th').text)
-        movieinfo[2].push(item.css('td').text.split("\n"))
+        movieinfo[2].push(item.css('td').text)
       end
     end
-    movieinfo[1].shift
-    movieinfo[2].each { |item| item.delete('') if item.is_a?(Array) }
+    # movieinfo[2].each { |item| item.delete('') if item.is_a?(Array) }
     movieinfo[3].push(parsed.css('div.mw-parser-output').css('p')[1].text)
-    @movies.push(movieinfo)
+    @historical.push(movieinfo)
     movieinfo
   end
 
-  def movies_viewed
+  def movies_array
     @movies
+  end
+
+  def movies_bookmark(array)
+    if movie_duplicate(array) == true
+      @movies.each_with_index do |item, index|
+        @movies.delete_at(index) if item[0][0] == array[0][0]
+      end
+    else
+      @movies.push(array)
+    end
+  end
+
+  def movie_duplicate(array)
+    @movies.each do |item|
+      return true if item[0][0] == array[0][0]
+    end
+    false
   end
 
   private

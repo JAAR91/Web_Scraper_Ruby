@@ -47,6 +47,14 @@ class Inputchecker
     input
   end
 
+  def movie_profile_checker(input, array)
+    until array.any?(input)
+      puts 'Please enter a valid value!:'
+      input = gets.chomp
+    end
+    input
+  end
+
   def number_checker(input, initial, last)
     array = []
 
