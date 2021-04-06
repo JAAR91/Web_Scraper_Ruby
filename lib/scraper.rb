@@ -2,7 +2,6 @@ require_relative './input_checker'
 require_relative './screen_load'
 require 'nokogiri'
 require 'httparty'
-require 'byebug'
 
 class Scraper
   attr_reader :parsed
@@ -67,6 +66,10 @@ class Scraper
 
   def movies_array
     @movies
+  end
+
+  def movies_history
+    @historical
   end
 
   def movies_bookmark(array)

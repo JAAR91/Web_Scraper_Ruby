@@ -1,6 +1,5 @@
 require_relative '../lib/scraper'
 require_relative '../lib/input_checker'
-require 'byebug'
 
 @input_checker = Inputchecker.new
 @movies = Scraper.new
@@ -35,16 +34,22 @@ def print_menu
   puts '3. About'
   puts '4. Credits'
   puts '5. Bookmarks'
-  puts '6. Exit'
+  puts '6. History'
+  puts '7. Exit'
   puts '+------------------------------+'
-  puts '| select a number from 1 to 5  |'
+  puts '| select a number from 1 to 7  |'
   puts '+------------------------------+'
 end
 
 def main_menu
   @input_checker.display_clear
   print_menu
-  input = @input_checker.number_checker(gets.chomp.to_i, 1, 6)
+  input = @input_checker.number_checker(gets.chomp.to_i, 1, 7)
+  menu_call_options_one(input)
+  menu_call_options_two(input)
+end
+
+def menu_call_options_one(input)
   case input
   when 1
     movie_index_by
@@ -54,9 +59,16 @@ def main_menu
     instructions_menu
   when 4
     credits
+  end
+end
+
+def menu_call_options_two(input)
+  case input
   when 5
     movie_bookmarks
   when 6
+    history
+  when 7
     exit_game
   end
 end
@@ -100,6 +112,7 @@ def instructions_menu
   boxing('   About Movie Web Scraper  ')
   instructions_partone
   instructions_parttwo
+  instructions_partthird
   gets
   main_menu
 end
@@ -134,6 +147,27 @@ def movie_bookmarks
     ans = @input_checker.menu_list_checker(gets.chomp, page, %w[a A f F m M b B n N])
     page = page_back(page, t_page) if %w[b B].any?(ans)
     page = page_next(page, t_page) if %w[n N].any?(ans)
+    bookmark_page_print(array[ans.to_i - 1]) if page_array(page).any?(ans)
+  end
+  main_menu
+end
+
+def history
+  array = @movies.movies_history
+  ans = nil
+  page = 0
+  t_page = page_count(array.count)
+  until %w[m M].any?(ans)
+    @input_checker.display_clear
+    boxing("History of movies watches. #{array.count} movies viewed")
+    puts "+-------------page #{page + 1} of #{t_page}----------------+"
+    print_movies_bookmarks(array, page)
+    puts "+-------------page #{page + 1} of #{t_page}----------------+"
+    movie_bookmarks_options
+    ans = @input_checker.menu_list_checker(gets.chomp, page, %w[a A f F m M b B n N])
+    page = page_back(page, t_page) if %w[b B].any?(ans)
+    page = page_next(page, t_page) if %w[n N].any?(ans)
+    bookmark_page_print(array[ans.to_i - 1]) if page_array(page).any?(ans)
   end
   main_menu
 end
@@ -147,7 +181,6 @@ end
 def movie_bookmarks_options
   puts '+--------------------------------------+'
   puts '|Enter a number to select a movie      |'
-  puts '|Enter F to see all movies information |'
   puts '|Enter M to go back to the Menu        |'
   puts '+--------------------------------------+'
 end
@@ -212,6 +245,17 @@ def print_movies(name, link)
   main_menu
 end
 
+def bookmark_page_print(array)
+  ans = nil
+  while ans != ''
+    @input_checker.display_clear
+    print_movie_info(array)
+    movie_profile_options(array)
+    ans = @input_checker.movie_profile_checker(gets.chomp, ['b', 'B', ''])
+    @movies.movies_bookmark(array) if %w[b B].any?(ans)
+  end
+end
+
 def print_movies_index(array, page)
   array.each_with_index do |item, index|
     puts "#{index + 1}. #{item.text}" if index >= (page * 20) && index <= ((page * 20) + 19)
@@ -257,6 +301,23 @@ def instructions_parttwo
   puts '|name and an option to open  |'
   puts '|the profile for each of the |'
   puts '|results                     |'
+end
+
+def instructions_partthird
+  puts '|                            |'
+  puts '|Also thre is included a     |'
+  puts '|bookmark option to save the |'
+  puts '|movies you have search and  |'
+  puts '|compare then later without  |'
+  puts '|having the problem of       |'
+  puts '|searching the movies one    |'
+  puts '|by one                      |'
+  puts '|                            |'
+  puts '|To end the last feature is a|'
+  puts '|history of all movies       |'
+  puts '|profile you visited, you can|'
+  puts '|use this in case you forgot |'
+  puts '|to bookmark a movie         |'
   puts '+----------------------------+'
   print 'Press enter to go back.......'
 end
