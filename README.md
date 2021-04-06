@@ -84,6 +84,16 @@ Enter a word(Ex. batman) and this will return all the movies that contain that w
 
 Now you only have to enter the number of the movie you want to see the info off, just like we saw before if you want to look for another movie just press enter, and it will ask you again to enter a name, to go back to the menu just press m on the search by name screen.
 
+The App also includes a bookmark option you can find on the movie profile, in case you want to compare movies one to another, you save as many as you can and then from the menu you select the option 5, and this will show you the list of bookmarked movies in list of 20 movies per page.
+
+<img src="./resources/bookmarks.png">
+
+Once on the bookmark menu you can open each movie profile just like before and even remove the movie from the bookmarks.
+
+To end there is also a history option on the menu, that let you see all the movies profile you have visited in case you forgot to bookmark a movie and dont want to search for the movie again, you can find it on the history.
+
+<img src="./resources/history.png">
+
 ## Authors
 
 👤 **Jose Alberto Arriaga Ramos**
