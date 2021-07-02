@@ -2,15 +2,22 @@
 
 ## Ruby's Movies WEB Scraper from Wikipedia
 
-> This is a web scraper that allows you to get all movies on Wikipedia and get info from each of them, also includes a search by name option which makes it easier to get the basic info from a movie.
+This project is a web scrapper made with ruby, its function is to get all the movies store on Wikipedia.
 
+The project includes:
+-Menu that let find the movies by index
+-A search option to look out movies by name
+-A bookmark option to compare and have a fast way to find movies again.
+-A history that lets you find that movie you saw before but you didn't bookmark it.
+
+The project also includes 'type sense' option to avoid invalid inputs or app crashing.
 ## Built With
 
-- >Ruby
+- Ruby
 
 ## Getting Started
 
-> To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
@@ -32,18 +39,25 @@
   
 ### Setup
 
->Setup by  following the installation instructions below :
-* Open your terminal and locate the folder you want to clone the repository.
+Setup by  following the installation instructions below :
+- Open your terminal and locate the folder you want to clone the repository.
 
 ### Install
 
-Run the following command into your terminal:
+First you need to clone the repository to a local folder, to do that user the following command on you terminal:
 
-```console
-git clone git@github.com:JAAR91/Web_Scraper_Ruby.git
-
-gem install bundle
 ```
+$ git clone git@github.com:JAAR91/Web_Scraper_Ruby.git
+```
+Now get inside your folder using:
+```
+$ cd WE_SCRAPER_RUBY
+```
+I use a nokori and httparty gem to help me scrap the website, to install then user the command:
+```
+$ gem install bundle
+```
+
 ## How to Start the Scraper
 
 ```console
