@@ -1,16 +1,16 @@
 ![](https://img.shields.io/badge/Microverse-blueviolet)
 
-## Ruby's Movies WEB Scraper from Wikipedia
+## Movies WEB Scraper
 
-This project is a web scrapper made with ruby, its function is to get all the movies store on Wikipedia.
+Web scrapper made with ruby. It get all the movies store on Wikipedia.
 
 The project includes:
 - Menu that let find the movies by index
 - A search option to look out movies by name
 - A bookmark option to compare and have a fast way to find movies again.
 - A history that lets you find that movie you saw before but you didn't bookmark it.
-
 The project also includes 'type sense' option to avoid invalid inputs or app crashing.
+
 ## Built With
 
 - Ruby
